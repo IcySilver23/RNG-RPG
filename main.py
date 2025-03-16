@@ -6,6 +6,7 @@ from relics import Relic
 from weather import change_weather
 from ai_npc import AI_NPC
 from battle_pass import BattlePass, battle_pass_rewards
+from database import save_game, load_game
 import random
 
 def roll(player):
@@ -15,9 +16,15 @@ def roll(player):
     print(f"You received: {item}")
 
 def main():
-    name = input("Enter your player's name: ")
-    class_type = input("Choose your class (Assassin, Mage, Berserker): ")
-    player = Player(name, class_type)
+    try:
+        player = load_game()
+        print("Game loaded successfully.")
+    except FileNotFoundError:
+        name = input("Enter your player's name: ")
+        class_type = input("Choose your class (Assassin, Mage, Berserker): ")
+        player = Player(name, class_type)
+        print("New game started.")
+
     players = [player]  # Example list of players
     black_market = BlackMarket()  # Initialize Black Market
     npc = AI_NPC("John", "friendly", ["greet", "trade", "quest"])  # Example NPC
@@ -45,7 +52,8 @@ def main():
         print("19. Check NPC behavior based on reputation")
         print("20. Show Battle Pass rewards")
         print("21. Gain Battle Pass level")
-        print("22. Exit")
+        print("22. Save game")
+        print("23. Exit")
         choice = input("Enter your choice: ")
 
         if choice == '1':
@@ -129,6 +137,9 @@ def main():
         elif choice == '21':
             battle_pass.gain_level(player)
         elif choice == '22':
+            save_game(player)
+        elif choice == '23':
+            save_game(player)
             print("Exiting game.")
             break
         else:
